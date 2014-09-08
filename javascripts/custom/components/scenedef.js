@@ -6,7 +6,8 @@ var Pages = function () {
         transition: 'fade', 
         frames: [
           {
-              url: "pages/0/intro.html"
+              url: "pages/0/intro.html",
+              container: 'iframe'
           }, 
         ], 
       }, 
@@ -602,6 +603,16 @@ var Pages = function () {
 
 var _pages = new Pages();
 
+
+function getCurrentFrameContainer() {
+  //checking if the current frame has any subrames within the chapter. 
+  if( _pages.doesFrameHaveSubframes( _pageIndex, _frameIndex ) ){
+    return _pages.visitSubframe( _pageIndex, _frameIndex ).container;
+  }
+  else{
+      return _pages.getFrames(_pageIndex)[_frameIndex].container;
+  }
+}
 
 function getCurrentFrameUrl() { 
 
