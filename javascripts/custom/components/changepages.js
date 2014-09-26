@@ -20,16 +20,68 @@
     navList = $("#mainnav"),
     animating = false;
     
+    //give the function a name so you can listen and not listen to it. 
+    var keyPressLeft = function(e) {
+        if(e.which == 37) { //left previous
+          // console.log("prev"); 
+          $('.prevbutton').trigger("click"); 
+        } 
+    }
 
+    var keyPressRight = function(e) {
+        if (e.which == 39) {
+          $('.nextbutton').trigger("click"); 
+        }
+    }
+    
+    var keyPressBackspace = function(e) {
+      if (e.which==32) {
+        $("#skip-notice").trigger('click'); 
+      }
+    }
 
+    function enableKeyBackspace() {
+      // console.log('enablebackspace'); 
+      document.addEventListener('keydown', keyPressBackspace, false); 
+    }
 
+    function enableKeyRight() {
+      document.addEventListener('keydown', keyPressRight, false); 
+    }
+
+    function enableKeyLeft() {
+      document.addEventListener('keydown', keyPressLeft, false); 
+    }
+    //You can move left and right through the chapter. 
+    function enablekeyRightLeft() {
+      // console.log('called keys'); 
+      document.addEventListener('keydown', keyPressRight, false); 
+      document.addEventListener('keydown', keyPressLeft, false); 
+    }
+
+    function disableKeyLeft() {
+        document.removeEventListener('keydown', keyPressLeft, false); 
+    }
+
+    function disableKeyRight() {
+          //it can't recognize that function. 
+          console.log('disabled keypress'); 
+          document.removeEventListener('keydown', keyPressRight, false); 
+        }
+
+    function disableRightLeft() {
+      document.removeEventListener('keydown', keyPressRight, false); 
+      document.removeEventListener('keydown', keyPressRight, false); 
+    }
+  
     function hideNavNext() {nextbutton.addClass('hidden');}
-    function showNavNext() {nextbutton.removeClass('hidden');}
+    function showNavNext() { if( nextbutton.hasClass("hidden") ){ nextbutton.removeClass('hidden'); } }
     function hideNavPrev() {prevbutton.addClass('hidden');}
-    function showNavPrev() {prevbutton.removeClass('hidden');}
+    function showNavPrev() { if( nextbutton.hasClass("hidden") ){ prevbutton.removeClass('hidden');} }
     function hideNav() {nextbutton.addClass('hidden'); prevbutton.addClass('hidden');}
     function showNav() {nextbutton.removeClass('hidden'); prevbutton.removeClass('hidden');}
 
+    // function disableKeyPress() {$("body").removeEventListener('keydown', keyPress, false);}
 
 // Fills the navigation with the appropriate links and dropdowns
 //$.each(pages, function(pageNumber){
@@ -48,195 +100,217 @@
       //         var navFrameLink = $('<a/>').text('Page ' + (frameNumber + 1)).attr('onClick', 'changePage('+ i +', ' +frameNumber +')').appendTo(navFrame);
       //   });
       // };  
-  };
-//});
-
-/////////////////////////////////////////////////////////////////////////////////
-// Sliders ///////////////
-/////////////////////////////////////////////////////////////////////////////////
-
-function changeSlider(value) {
-  var slider = $("ul.slider"),
-  slides = slider.children('li'),
-  slideCount = slides.length, 
-  slidecounter = slider.children('.counter'), 
-  currentIndex = slideIndex;
-  
-  if (value==="next") {
-    slideIndex < slideCount-1 ? slideIndex++ : slideIndex = 0;
-  } 
-  else if (value==="prev") { 
-    slideIndex > 0 ? slideIndex-- : slideIndex = slideCount-1;
-  } 
-  else if (value==="first") { 
-    slideIndex = 0;
-  } 
-  else if (value==="last") {
-    slideIndex = slideCount - 1;
-  } 
-  else { 
-    slideIndex = Math.min(slideCount-1, Math.max(0, parseInt(value)));
   }
-
-  slides.removeClass('active');
-
-  slides.eq(slideIndex).addClass('active').find('video').each( function () { 
-    var el = $(this)[0];
-    if (el) el.play(); 
-  } );
-
-  slides.eq(currentIndex).find('video').each( function () { 
-    var el = $(this)[0];
-    if (el) el.pause(); 
-  } );
-
-    // slideview.fadeOut('fast', function() { 
-    //     slideview.removeClass('loaded').load(getCurrentslideUrl(), function() { 
-    //         slideview.show();
-    //     }); 
-    // });
-
-  // changeslideBackground(_pages.getslideSound(_pageIndex, slideIndex));
-  // changeslideNarration(_pages.getslideNarration(_pageIndex, slideIndex));
-  
-  slidecounter.text((slideIndex+1) + "/" + (slideCount));
-}
+//});
 
 /////////////////////////////////////////////////////////////////////////////////
 // FRAMES ///////////////
 /////////////////////////////////////////////////////////////////////////////////
 
-function changeFrame(value) {
+// function disableKeyPress() {$("body").removeEventListener('keydown', keyPress, false);}
+
+
+function changeFrame(value, callback) {
+  // console.log("changeFrame click");
   frameview = $(".frameview").first();
+  _pages.resetSubframeIndex();
 
   var frameCount = _pages.getFrameCount(_pageIndex),
     currentIndex = _frameIndex,
     trans = _pages.getTransition(_pageIndex);
   
-  if (value==="next") {
-    if (_frameIndex < frameCount-1) _frameIndex++;
-  } 
-  else if (value==="prev") { 
-    if (_frameIndex > 0) _frameIndex--;
-  } 
-  else if (value==="first") { 
-    _frameIndex = 0;
-    trans = false;
-  } 
-  else if (value==="last") {
-    _frameIndex = frameCount - 1;
-    trans = false;
-  } 
-  else { 
-    _frameIndex = Math.min(frameCount-1, Math.max(0, parseInt(value)));
-    trans = false;
-  }
-
-if (animating) {
-  trans = false;
-  animating = false;
-};
-
-if (trans) {
-  if (trans === 'fade') trans = 'crossFade';
-  else if (trans === 'vertical') trans = (currentIndex > _frameIndex)  ? 'slideUp' : 'slideDown';
-  else if (trans === 'horizontal') trans = (currentIndex > _frameIndex)  ?'slideLeft' : 'slideRight';
-
-  frameview.children().wrapAll('<div class="old ' + trans + '" />');
-  frameview.prepend('<div class="new ' + trans + '" />');
-
-  var frameNew = $('.new'),
-  frameOld = $('.old');
-  frameNew.eq(0).load(getCurrentFrameUrl(), function() {
-    $(this).imagesLoaded(function(){
-      focalpoint(function() {
-        frameNew.addClass('animate');
-        frameOld.addClass('animate');
-        changeSlider('first');
-        animating = true;
-
-        setTimeout(function(){
-          frameOld.remove();
-          frameNew.children().unwrap();
-          animating = false;
-
-          // force video to play!
-          Array.prototype.forEach.call(frameview[0].querySelectorAll('video.frame-video'), function (v) {
-            v.play();
-          });
-        },1500);
-      });
-    });
-  }); 
-} else {
-
-    frameview.fadeOut('fast', function() { 
-        frameview.removeClass('loaded').load(getCurrentFrameUrl(), function() {
-            changeSlider('first');
-            frameview.fadeIn();
-        }); 
-    });
-
-};
-
-
-  changeFrameBackground(_pages.getFrameSound(_pageIndex, _frameIndex));
-  changeFrameNarration(_pages.getFrameNarration(_pageIndex, _frameIndex));
-  
-////////IF THE USER DOES NOTHING, THEY WILL HEAR THIS. 
-//THIS IS ADDING THE TIMED OUT NARRATIONS FOR CHAPTER 1 AND MAKING SURE IT WAITS A LITTLE LONGER ON CHAPTER 7--> ////
-    var chapterSeven = false; 
-      if ( _pages.getFrameIndex(0,7) === "pages/1/7.html") {
-        chapterSeven = true; 
+        if (value==="next") {
+          if (_frameIndex < frameCount-1) _frameIndex++;
+        } 
+        else if (value==="prev") { 
+          if (_frameIndex > 0) _frameIndex--;
+        } 
+        else if (value==="first") { 
+          _frameIndex = 0;
+          trans = false;
+        } 
+        else if (value==="last") {
+          _frameIndex = frameCount - 1;
+          trans = false;
+        } 
+        else { 
+          _frameIndex = Math.min(frameCount-1, Math.max(0, parseInt(value)));
+          trans = false;
         }
 
-  if (_pageIndex === 0 &&  !chapterSeven) {
-    //if youw ere counting, count again every time we are in a new frame. 
-    if (_timer.isTimerOn() ) {
-      //timer was on and i moved to next frame and im not in page 7. 
-      _timer.resetTimer(); 
-    } else {
-        _timer.startTimer(); 
-    }
-  } else {
-      //if you are not in chapter 1 or 1.7 
-      console.log("you are not in chapter1 or you are at 1.7"); 
-      _timer.stopTimer(); 
-      chapterSeven = false; 
+        if (animating) {
+          trans = false;
+          animating = false;
+        }
+
+  if (trans) {
+    if (trans === 'fade') trans = 'crossFade';
+    else if (trans === 'vertical') trans = (currentIndex > _frameIndex)  ? 'slideUp' : 'slideDown';
+    else if (trans === 'horizontal') trans = (currentIndex > _frameIndex)  ?'slideLeft' : 'slideRight';
+
+    frameview.children().wrapAll('<div class="old ' + trans + '" />');
+    frameview.prepend('<div class="new ' + trans + '" />');
+
+
+    var frameNew = $('.new'),
+    frameOld = $('.old');
+    frameNew.eq(0).load(getCurrentFrameUrl(), function() {
+
+      //this waits for images to get loaded. 
+      $(this).imagesLoaded(function(){
+        focalpoint(function() {
+          frameNew.addClass('animate');
+          frameOld.addClass('animate');
+          animating = true;
+          console.log("everytime"); 
+
+          //very important, this makes sure that you don't accumulate divs on top of each other. 
+          frameNew.children().unwrap();
+            
+                setTimeout(function(){
+                    frameOld.remove();
+
+
+                    animating = false;
+
+                    var videoElements = frameview[0].querySelectorAll('video.frame-video');
+                    var videoCount = videoElements.length;
+                    // console.log(videoCount); 
+                    var loadedVideos = 0;
+
+                    // force video to play!
+                    //this means the video is not buffered. 
+                    Array.prototype.forEach.call(videoElements, function (v) {
+                      //the audio is waiting for you to get through the videos
+
+                      //video is already loaded, if the video was already ready, callback was never called. 
+                      if (v.readyState === 4){
+                        v.play(); 
+                        loadedVideos++;
+                          if (videoCount === loadedVideos){
+                            //start the audio
+                            clearDelayedAudio();
+                            //get the background and frame audio. 
+                            changeFrameBackground(_pages.getFrameSound(_pageIndex, _frameIndex));
+                            changeFrameNarration(_pages.getFrameNarration(_pageIndex, _frameIndex));
+                            }
+                        } else {
+                        //wait for it to load
+                          v.addEventListener('canplaythrough', function onCanPlayThrough () { 
+                            v.removeEventListener('canplaythrough', onCanPlayThrough); 
+                            v.play(); 
+                            loadedVideos++;
+                            //everything is loaded 
+                            if (videoCount === loadedVideos){
+                              //start the audio
+                              clearDelayedAudio();
+                              changeFrameBackground(_pages.getFrameSound(_pageIndex, _frameIndex));
+                              changeFrameNarration(_pages.getFrameNarration(_pageIndex, _frameIndex));
+                            }
+                           });
+                        }
+                    });
+                  },1500); //end of set timeout function. 
+            });
+          });
+        }); 
+      } else {
+
+ 
+      frameview.fadeOut('fast', function() { 
+           if (getCurrentFrameContainer() === 'iframe') {
+            // console.log('iframe here'); 
+           frameview.removeClass('loaded');
+
+            var iframe = frameview[0].querySelector('iframe');
+
+            if (!iframe) {
+              iframe = document.createElement('iframe');
+              frameview[0].appendChild(iframe);
+            }
+
+           iframe.src = getCurrentFrameUrl();
+              setTimeout(function () {
+              frameview.fadeIn();
+              frameview.addClass('loaded'); 
+              // console.log('added iframe'); 
+           }, 100);
+        }
+        else {
+          frameview.removeClass('loaded').load(getCurrentFrameUrl(), function() {
+              // changeSlider('first');
+             // console.log("new frame fades in"); 
+              frameview.fadeIn();
+
+          }); 
+        }
+      });
   }
-  
-  framecounter.text((_frameIndex+1) + "/" + (frameCount));
+
+  //we have to stop the timer aevery time we change frames. 
+  _timer.stopTimer(); 
+
+
+  if(_pageIndex === 0 && _frameIndex === 0 ) framecounter.addClass("hidden");
+  else {
+    if(framecounter.hasClass("hidden"))
+      framecounter.removeClass("hidden");
+  }
+
+  if(_pageIndex === 0 && _frameIndex === 9 ) { hideNavNext();}
+
+  framecounter.text((_frameIndex) + "/" + (frameCount-1));
 
   var end = _pages.pageCount() - 1;
   var frameEnd = _pages.getFrameCount(_pageIndex) - 1;
-  if(_pageIndex === end && _frameIndex === frameEnd){ hideNavNext(); showNavPrev(); }
-  else if (_pageIndex === 0 && _frameIndex === 0)   { showNavNext(); hideNavPrev(); }
-  else                                            { showNav(); }
+  // if(_pageIndex === end && _frameIndex === frameEnd){ hideNavNext(); showNavPrev(); }
+  if(_pageIndex === end && _frameIndex === frameEnd){ hideNavNext(); }
+  else if (_pageIndex === 0 && _frameIndex === 0)   { hideNav(); }
+  else                           { hideNav();}
+
+    //optional call back
+    if(callback) callback();
+
 }
+
 
 /////////////////////////////////////////////////////////////////////////////////
 // PAGES ///////////////
 /////////////////////////////////////////////////////////////////////////////////
 
 function changePage(value, frame) {
+  //why do you need to get the parameter of frame 
     var pagect = _pages.pageCount();
+
+    //resetChapter1Subframes(); 
+
+    //var newChapter = false; 
 
     if (value==="next") { if (_pageIndex < pagect-1) _pageIndex++; }
     else if (value==="prev") { if (_pageIndex > 0) _pageIndex--; } 
     else if (value==="first") { _pageIndex = 0; } 
     else if (value==="last"){ _pageIndex = pagect - 1; } 
+    else if (value==="apt") {_pageIndex = 2}
     else { _pageIndex = Math.max(0, Math.min(pagect - 1, parseInt(value))); }
 
+  //this was hapenning asynchronously, so you have to change the frame background noise in there. 
     pageview.fadeOut('fast', function() { 
         pageview.removeClass('loaded').load(_pages.getPageUrl(_pageIndex), function() {
-            frame ? changeFrame(frame) : changeFrame('first');
+            frame ?  changeFrame(frame) : changeFrame('first');
+            changeFrameBackground(_pages.getFrameSound(_pageIndex, _frameIndex));
             pageview.fadeIn();
+            //start the audio after the fade in. 
         }); 
     });
 
     changePageBackground(_pages.getPageSound(_pageIndex));
 
     pagetitle.text(_pages.getPageTitle(_pageIndex));
+
+    if (_pageIndex > 1 && pagetitle != 'The Street') {
+      console.log('ourside of the street'); 
+      //resetChapter1Subframes(); 
+    }
   
 }
 
@@ -244,12 +318,35 @@ function changePage(value, frame) {
 //  COMBO FUNCTIONS ///////////////
 /////////////////////////////////////////////////////////////////////////////////
 
+
 function next() { 
-    if (_frameIndex < _pages.getFrameCount(_pageIndex)-1) { changeFrame('next'); } 
-    else if(_pageIndex < _pages.pageCount()-1){ changePage('next'); }
-}; 
+
+  console.log("I'm on page:" + _pageIndex + "and frame" + _frameIndex); 
+
+    if (_frameIndex < _pages.getFrameCount(_pageIndex)-1) { 
+          ///special cases 
+          if( _frameIndex === 0 && _pageIndex === 0 ){
+            //dont show back nav at beginning, use the callback option to call hide on the cursor
+            changeFrame('next', hideNavPrev );
+            changeFrame('next', hideNavNext );
+          } else{
+            changeFrame('next'); 
+            }
+          } else if(_pageIndex < _pages.pageCount()-1){ 
+          changePage('next'); 
+          console.log('changed chapters'); 
+          }
+
+
+          if (_pageIndex > 1) {
+              //resetChapter1Subframes(); 
+              console.log('resetting subframes in next'); 
+              //resetChapter1Subframes(); 
+            }
+      }
 
 function prev() { 
+
     if (_frameIndex > 0) { changeFrame('prev'); } 
     else if(_pageIndex > 0) { changePage('prev', 'last');}
-};
+}

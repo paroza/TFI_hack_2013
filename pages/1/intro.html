@@ -1,9 +1,65 @@
+<style>
+#overlay{
+  z-index:9;
+  position: relative;
+  padding: 80px;
+  padding-top: 200px;
+  margin: 0 auto;
+  width: 100%;
+  height: 100%;
+/*  font-size:0.83em;*/
+  background-color: black;
+  color: rgb(250,250,250);
+  text-align: center;
+  display:block;
+}
+
+.SouvenirStd-Light { 
+  font-family: SouvenirStd-Light;
+  font-weight: normal;
+  font-style: normal;
+}
+
+</style>
+
 <div class="focalpoint" data-focus-scale="cover" data-focus-left=".66" data-focus-top=".66">
+
+
   <video width="1280" height="720" autoplay loop class="frame-video">
-  	<source src="assets/1/video/1.1.webmhd.webm" type="video/webm"></source>
-    <source src="assets/1/video/1.1.mp4" type="video/mp4"></source>
+  	<source src="http://dbef91h7r4asa.cloudfront.net/assets/1_street/video/1.1.webmhd.webm" type="video/webm"></source>
+    <source src="http://dbef91h7r4asa.cloudfront.net/assets/1_street/video/1.1.mp4" type="video/mp4"></source>
   </video>
 </div>
-<div class="fullScreen" style="background-color:rgba(50,50,50,0.5)"></div>
+<div class="fullScreen" id="intro_gif" style="position:fixed; background-color:rgba(50,50,50,0.5)">
+		<div class="square" style="text-align:center; z-index: 5; padding-top:170px;">
+		          <h3></br>
+		                  </br>
+		    <p style="font-size:30px">This is Marta's Block.</p> </br>
+		    </br>
+				</br>
+		      Use your arrow keys to move </br>
+		      up and down the street and find Marta. </br>
+		      
+		   		</br>
+		   		Press right arrow to continue. </h3>
+				</br>
+				</br>
 
-<div class="focalpoint" style="background-color:rgba(255,255,255,0.9); padding: 25px; width:22em; z-index:2;"> <p style="margin-bottom:1em;">This is the project our team made over the course of 5 days: presented here in it's full glory, with all of it's original bugs and unfinished assets. For the best experience, please view this project using Mozilla Firefox. To find out if there is a finished version of this, or other information about the larger Los Sures project, visit us at <a href="http://www.uniondocs.org">uniondocs.org</a> </p><img src="assets/1/img/hacks-logo.png" style="width:100%;"></div>
+			<img style="width:20%; height:20%" src="http://dbef91h7r4asa.cloudfront.net/assets/1_street/img/Right_Arows.gif">
+		</div>
+
+</div>
+		
+<script>
+
+//hideNav(); 
+//this should only be to the right. 
+enableKeyRight(); 
+
+hideNavPrev();  
+showNavNext(); 
+
+
+</script>
+
+

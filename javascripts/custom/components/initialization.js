@@ -1,7 +1,7 @@
 $(function(){
+    // console.log("initialization.js"); 
 
         changePage(0);
-
 
         $(window).on("load resize orientationchange", function() { focalpoint(); });
         // $('.audio').on('click', function(){ toggleSound(); });

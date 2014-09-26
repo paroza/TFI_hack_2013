@@ -1,0 +1,91 @@
+<html>
+	<head>
+		 <link rel="stylesheet" type="text/css" href="../../webfonts/MyFontsWebfontsKit.css">
+
+	</head>
+
+<!-- do not erase the style, because this is what erases the old one, the right index number, in change frame--> 
+<style>
+.SouvenirStd-Light { 
+  font-family: SouvenirStd-Light;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.text {
+      z-index:30; 
+      background-color:rgba(0,0,0,0.7); 
+      position:fixed;
+      left:0;
+      top:0;
+      margin-left:0; 
+      padding-top:20%;
+      width: 100%;
+      height:100%; 
+      padding:20px;
+      color: white;
+      font-size:2em;
+      text-align:center;
+}
+
+</style>
+
+
+  <div class="focalpoint" data-focus-scale="cover" data-focus-left=".66" data-focus-top=".66">
+    <video width="1280" height="720" preload="auto" autoplay class="frame-video" data-video="part2">
+    	<source src="http://dbef91h7r4asa.cloudfront.net/assets/part2/Part2_Trailer.webmhd.webm" type="video/webm"></source>
+      <source src="http://dbef91h7r4asa.cloudfront.net/assets/part2/Part2_Trailer.mp4" type="video/mp4"></source>
+    </video>
+  </div>
+
+  <div id="text" class="text SouvenirStd-Light hidden fadeable" style="padding-top:23%" > 
+        Coming soon. 
+        </br>
+      </br>
+    </br>
+        Click to watch trailer for Part II.
+  </div>
+
+
+  <div id="text2" class="text SouvenirStd-Light hidden fadeable" style="padding-top:22%" > 
+        To be continued...
+        </br>
+      </br>
+    </br>
+    To see more from Living Los Sures</br>
+    click
+    <a href="http://livinglossures.com">here</a>
+  
+  </div>
+
+</html>
+<script>
+//so you can't go to the intro page 
+disableKeyLeft();
+window.parent.hideNav(); 
+
+    var video = document.querySelector('video[data-video="part2"]');
+    popcorn = new Popcorn(video); 
+    var SHOW_FLOWERS = 4.25; //time in seconds; 
+    var VIDEO_END_TIME = 82; 
+    
+    popcorn.cue(SHOW_FLOWERS, function() {
+      //console.log('show the text'); 
+      $('#text').removeClass('hidden'); 
+      popcorn.pause(); 
+
+        window.addEventListener('click', function() {
+          $("#text").addClass('hidden'); 
+          popcorn.play(); 
+        }, false); 
+    } ); 
+
+
+  popcorn.cue(VIDEO_END_TIME, function() {
+    $("#text2").removeClass('hidden'); 
+
+  })
+
+
+
+</script>

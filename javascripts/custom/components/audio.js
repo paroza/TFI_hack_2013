@@ -20,11 +20,8 @@
               if (pageBg1Playing){
 
                 if (!info){
-
-                  //if there is no info then return early and fade out bg1
                   currentPageBackground1.fadeOut(0, 400);
                   pageBg1Playing = false;
-
                   return;
                 }else{
                   
@@ -35,23 +32,22 @@
                   pageBg1Playing = false;
 
                 }
-
-                //if bg1 is null, check bg2
+              //if bg1 is null, check bg2
               }else if( pageBg2Playing ){
 
-              if (!info){
-                    //if there is no info then return early and fade out bg2
-                    currentPageBackground2.fadeOut(0, 400);
-                    pageBg2Playing = false;
-                    return;
-                  }else{
+                    if (!info){
+                          //if there is no info then return early and fade out bg2
+                          currentPageBackground2.fadeOut(0, 400);
+                          pageBg2Playing = false;
+                          return;
+                        }else{
 
-                    currentPageBackground1 = new Howl(info);
-                    currentPageBackground1.fadeIn(1, info.fadein || 800);
-                    pageBg1Playing = true;
-                    currentPageBackground2.fadeOut(0, 400);
-                    pageBg2Playing = false;
-                  }
+                          currentPageBackground1 = new Howl(info);
+                          currentPageBackground1.fadeIn(1, info.fadein || 800);
+                          pageBg1Playing = true;
+                          currentPageBackground2.fadeOut(0, 400);
+                          pageBg2Playing = false;
+                        }
 
               }else{
 
@@ -70,6 +66,7 @@
             function changeFrameBackground(info) { 
               //if bg1 is not null, then it is playing and bg2 needs to be created and bg1 faded out
               if (frameBg1Playing){
+                // console.log('skipped'); 
 
                 if (!info){
                   //if there is no info then return early and fade out bg1
@@ -77,6 +74,7 @@
                   frameBg1Playing = false;
                   return;
                 }else{
+                  // console.log('created new background audio'); 
                   //create 2 and fadeout 1
                   currentFrameBackground2 = new Howl(info);
                   currentFrameBackground2.fadeIn(1, info.fadein || 800);
@@ -116,23 +114,29 @@
             }
 
 
-
-
 ////////////////////////This makes sure that we don't repeat the narratives//////////////
 /////////////////////////////////////////////////////
 
-            var currentDelay; 
+            var currentDelay = null; 
             var hasDelay = false;
             //there is somethign waitng to play  
 
+            //safety so that we clear the audio. 
+            function clearDelayedAudio(){
+              if(currentDelay)
+                clearTimeout(currentDelay); 
+                //console.log("just cleared the delay"); 
+              hasDelay = false;
+            }
+
             function delayAudio(cfa, si) {
-              console.log(cfa );
+              //console.log(cfa );
               //This makes sure that we don't repeat the narratives
               if (hasDelay) {
                 clearTimeout(currentDelay); 
                 currentDelay = setTimeout( 
                 function () { 
-                  console.log('playing delayed audio');
+                  // console.log('playing delayed audio');
                   cfa.fadeIn(1, si.fadein || 0); 
                   hasDelay = false; 
                 },
@@ -142,7 +146,7 @@
                 else {
                       currentDelay = setTimeout( 
                       function () { 
-                      console.log('playing delayed audio');
+                      //console.log('playing delayed audio');
                       cfa.fadeIn(1, si.fadein || 0); 
                       hasDelay = false; 
                      },
@@ -161,17 +165,25 @@
               //  // currentFrameNarration.fadeOut(0,400);
               // }
 
+              //the subgrame narration is not entering this loop, so we can't hear it with a delay. 
               if (!info) return; 
+
+              // console.log(Array.isArray(info)); 
 
               // find first non played clip
               if (Array.isArray(info)) {
                 for (var i=0; i< info.length; i++) {
                   var si = info[i]; 
-                  if (si.played) continue;
-                  //if you didn't do 
+                  // console.log("played" + si.played); 
+                  if (si.played) continue; //if you already played it, go to the next iteration of the loop 
+                  //if you didn't do it, make it true. 
+                  // console.log("changing played to true"); 
                   si.played = true;
+                  // console.log("played" + si.played); 
                   currentFrameNarration = new Howl(si);
                   if (si.delay) {
+
+                    //it is not adding subframe narrations here 
                     console.log('delayed audio to be played: ', si.delay, si.urls[0]);
                     delayAudio(currentFrameNarration, si);
                   }
@@ -185,6 +197,7 @@
                 info.played = true;
                 currentFrameNarration = new Howl(info);
                 currentFrameNarration.fadeIn(1, info.fadein || 0); 
+                // console.log("narration fading in"); 
               }
             }
 
@@ -192,12 +205,17 @@
             
             function toggleSound(){
               if (soundEnabled) {
+                // console.log("mute"); 
                 soundEnabled = false;
                 Howler.mute();
-                $('.audio').text('Enable Audio');
-              } else{
-                soundEnabled = true;
-                Howler.unmute();
-                $('.audio').text('Disable Audio')
+                //here is where we will add the alternative images. change image source with jquery 
+                // $('.audio').text('Enable Audio');
+                $('.audio').attr('src', "https://s3-us-west-2.amazonaws.com/89steps/assets/ux/Menu/Sound_Off.svg"); 
+              }else {
+                    // console.log('unmute'); 
+                    soundEnabled = true;
+                    Howler.unmute();
+                    $('.audio').attr('src', "https://s3-us-west-2.amazonaws.com/89steps/assets/ux/Menu/Sound_On.svg"); 
+                }
               };
-            }
+            

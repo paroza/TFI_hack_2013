@@ -3,13 +3,13 @@
     <style>
       html, body {
         background: #000;
+        font-family: SouvenirStd-Light;
         margin: 0;
         padding: 0;
         width: 100%;
         height: 100%;
         color: #fff;
-        font-family: helvetica;
-        font-size: 3em;
+        font-size: 2em;
       }
 
       .fadeable {
@@ -30,35 +30,30 @@
         visibility: hidden;
       }
 
-      #left-button, #right-button {
+      #left-button, #right-button, #look-around {
         -webkit-user-select: none;
            -moz-user-select: none;
             -ms-user-select: none;
                 user-select: none;
-        position: fixed;
-        margin-top: -35px;
-        width: 50px;
-        height: 70px;
-        line-height: 68px;
-        background-color: rgba(0, 0, 0, 0.8);
+        position: absolute; 
+        width: 50%;
+        z-index:5;
+        height: 100%;
         text-align: center;
-        text-decoration: none;
-        color: #fff;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        background-clip: padding-box;
-        font-size: 14px;
-        cursor: pointer;
-        top: 50%;
+        /*color: #fff;*/
+        top: 0;
       }
 
       #left-button {
-        left: 0;
-        border-left: 0;
+        margin-left: -50px;
+        cursor: url(../../UX-ASSETS/Arrows/left.cur), pointer;
       }
 
       #right-button {
-        right: 0;
-        border-right: 0;
+        left: 50%;
+        margin-right: -50px;
+        cursor: url(../../UX-ASSETS/Arrows/right.cur), pointer;
+
       }
 
       #video-container {
@@ -104,6 +99,12 @@
         left: 0;
       }
 
+      .SouvenirStd-Light { 
+        font-family: SouvenirStd-Light;
+        font-weight: normal;
+        font-style: normal;
+      }
+
       #continue-message {
         position: fixed;
         margin-top: -35px;
@@ -115,71 +116,166 @@
         font-size: 70px;
         top: 50%;
         right: 60px;
+
+
+      }
+
+    .instructions{
+      z-index:30; 
+      background-color:rgba(0,0,0,0.7); 
+      position:fixed;
+      left:0;
+      top:0;
+      margin-left:0; 
+      width: 100%;
+      height:100%; 
+      padding:20px;
+    }
+
+      #AptProgressBar{
+        position: absolute;
+        width: 300px;
+        height: 10px;
+        margin-left: -120px;
+        top: 38%;
+        left: 50%;
+        border: 2px solid white;
+      }
+
+      #AptProgressBar #Progress{
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        height: 100%;
+        width: 0%;
+        background-color: white;
+      }
+
+      #overlay1{
+        z-index:9;
+        position: relative;
+        padding-top: 200px;
+        left:0;
+        top:0;
+        margin: 0 auto;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+        color: rgb(250,250,250);
+        text-align: center;
+        display:block;
       }
     </style>
+     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="javascripts/vendor/jquery-2.0.0.min.js"><\/script>')</script>
+   <link rel="stylesheet" type="text/css" href="webfonts/MyFontsWebfontsKit.css">
     <script src="../../javascripts/vendor/popcorn.min.js"></script>
     <script src="../../javascripts/custom/components/loader.js"></script>
     <script src="apartment.js"></script>
+
   </head>
   <body>
+    
+
     <div id="video-container">
       <div class="video-sub-container center">
         <video preload="auto" data-video="start">
-          <source src="../../assets/4/video/4.0a_MainVideo.mp4.mp4" type="video/mp4"></source>
-          <source src="../../assets/4/video/4.0a_MainVideo.webmhd.webm" type="video/webm"></source>
+          <source src="http://dbef91h7r4asa.cloudfront.net/assets/4_apt/video/4.0a_MainVideo.mp4" type="video/mp4"></source>
+          <source src="http://dbef91h7r4asa.cloudfront.net/assets/4_apt/video/4.0a_MainVideo.webmhd.webm" type="video/webm"></source>
         </video>
         <video preload="auto" data-video="background">
-          <source src="../../assets/4/video/4.0b_Video.mp4.mp4" type="video/mp4"></source>
-          <source src="../../assets/4/video/4.0b_Video.webmhd.webm" type="video/webm"></source>
+          <source src="http://dbef91h7r4asa.cloudfront.net/assets/4_apt/video/4.0b_Video.mp4" type="video/mp4"></source>
+          <source src="http://dbef91h7r4asa.cloudfront.net/assets/4_apt/video/4.0b_Video.webmhd.webm" type="video/webm"></source>
         </video>
         <video preload="auto" data-video="kitchen" hidden loop="true">
-          <source src="../../assets/4/video/4.1_cooking_crop.mp4" type="video/mp4"></source>
-          <source src="../../assets/4/video/4.1_cooking_crop.webmhd.webm" type="video/webm"></source>
+          <source src="http://dbef91h7r4asa.cloudfront.net/assets/4_apt/video/4.1_cooking_crop.mp4" type="video/mp4"></source>
+          <source src="http://dbef91h7r4asa.cloudfront.net/assets/4_apt/video/4.1_cooking_crop.webmhd.webm" type="video/webm"></source>
         </video>
       </div>
       <div class="video-sub-container right">
         <video preload="auto" data-video="right" hidden loop="true">
-          <source src="../../assets/4/video/4.2a.mp4.mp4" type="video/mp4"></source>
-          <source src="../../assets/4/video/4.2a.webmhd.webm" type="video/webm"></source>
+          <source src="http://dbef91h7r4asa.cloudfront.net/assets/4_apt/video/4.2a.mp4" type="video/mp4"></source>
+          <source src="http://dbef91h7r4asa.cloudfront.net/assets/4_apt/video/4.2a.webmhd.webm" type="video/webm"></source>
         </video>
         <video preload="auto" data-video="right" hidden loop="true">
-          <source src="../../assets/4/video/4.2b.mp4.mp4" type="video/mp4"></source>
-          <source src="../../assets/4/video/4.2b.webmhd.webm" type="video/webm"></source>
+          <source src="http://dbef91h7r4asa.cloudfront.net/assets/4_apt/video/4.2b.mp4" type="video/mp4"></source>
+          <source src="http://dbef91h7r4asa.cloudfront.net/assets/4_apt/video/4.2b.webmhd.webm" type="video/webm"></source>
         </video>
         <video preload="auto" data-video="right" hidden loop="true">
-          <source src="../../assets/4/video/4.2c.mp4.mp4" type="video/mp4"></source>
-          <source src="../../assets/4/video/4.2c.webmhd.webm" type="video/webm"></source>
+          <source src="http://dbef91h7r4asa.cloudfront.net/assets/4_apt/video/4.2c.mp4" type="video/mp4"></source>
+          <source src="http://dbef91h7r4asa.cloudfront.net/assets/4_apt/video/4.2c.webmhd.webm" type="video/webm"></source>
         </video>
       </div>
       <div class="video-sub-container left">
         <video preload="auto" data-video="left" hidden loop="true">
-          <source src="../../assets/4/video/4.3a.mp4.mp4" type="video/mp4"></source>
-          <source src="../../assets/4/video/4.3a.webmhd.webm" type="video/webm"></source>
+          <source src="http://dbef91h7r4asa.cloudfront.net/assets/4_apt/video/4.3a.mp4" type="video/mp4"></source>
+          <source src="http://dbef91h7r4asa.cloudfront.net/assets/4_apt/video/4.3a.webmhd.webm" type="video/webm"></source>
         </video>
         <video preload="auto" data-video="left" hidden loop="true">
-          <source src="../../assets/4/video/4.3b.mp4.mp4" type="video/mp4"></source>
-          <source src="../../assets/4/video/4.3b.webmhd.webm" type="video/webm"></source>
+          <source src="http://dbef91h7r4asa.cloudfront.net/assets/4_apt/video/4.3b.mp4" type="video/mp4"></source>
+          <source src="http://dbef91h7r4asa.cloudfront.net/assets/4_apt/video/4.3b.webmhd.webm" type="video/webm"></source>
         </video>
       </div>
       <audio preload="auto">
-        <source src="../../assets/4/sound/4_feeding_pigeons.mp3.mp3" type="audio/mp3"></source>
-        <source src="../../assets/4/sound/4_feeding_pigeons.oggvorbis.ogg" type="audio/ogg"></source>
+        <source src= "http://dbef91h7r4asa.cloudfront.net/assets/4_apt/sound/4_feeding_pigeons.mp3" type="audio/mp3" ></source>
+        <source src="http://dbef91h7r4asa.cloudfront.net/assets/4_apt/sound/4_feeding_pigeons.oggvorbis.ogg" type="audio/ogg"></source>
       </audio>
       <audio preload="auto">
-        <source src="../../assets/4/sound/4_Flourescent_Light_Drip.mp3.mp3" type="audio/mp3"></source>
-        <source src="../../assets/4/sound/4_Flourescent_Light_Drip.oggvorbis.ogg" type="audio/ogg"></source>
+        <source src="http://dbef91h7r4asa.cloudfront.net/assets/4_apt/sound/4_turn_off_tap.mp3" type="audio/mp3"></source>
+        <source src="http://dbef91h7r4asa.cloudfront.net/assets/4_apt/sound/4_turn_off_tap.oggvorbis.ogg" type="audio/ogg"></source>
       </audio>
       <audio preload="auto">
-        <source src="../../assets/4/sound/4_turn_off_tap.mp3.mp3" type="audio/mp3"></source>
-        <source src="../../assets/4/sound/4_turn_off_tap.oggvorbis.ogg" type="audio/ogg"></source>
-      </audio>
-      <audio preload="auto">
-        <source src="../../assets/4/sound/4.1_soup.mp3.mp3" type="audio/mp3"></source>
-        <source src="../../assets/4/sound/4.1_soup.oggvorbis.ogg" type="audio/ogg"></source>
+        <source src="http://dbef91h7r4asa.cloudfront.net/assets/4_apt/sound/4.1_soup.mp3" type="audio/mp3"></source>
+        <source src="http://dbef91h7r4asa.cloudfront.net/assets/4_apt/sound/4.1_soup.oggvorbis.ogg" type="audio/ogg"></source>
       </audio>
     </div>
-    <div id="right-button" class="hidden fadeable">&rarr;</div>
-    <div id="left-button" class="hidden fadeable">&larr;</div>
-    <div id="continue-message" class="hidden fadeable">Continue</div>
+
+       <div id="instructions" class="instructions hidden fadeable" style="text-align:center; font-size:30px">
+
+
+              <div style="padding-top:30%">Martha has lived in this apartment for nearly 40 years. 
+              </br>
+            </br>
+              Use your arrow keys to look around.
+            </br></div>
+          </br>
+        </br>
+            <p style="color: #ecb900;">Click to continue. </p>
+    <!--         <img style="padding-top:7%" src="http://dbef91h7r4asa.cloudfront.net/assets/1_street/img/apt_nav.gif"> -->
+        </div> 
+
+          <div id="look-around" class= "hidden fadeable"></div>
+        <div id="right-button" class="hidden fadeable"></div>
+        <div id="left-button" class="hidden fadeable"></div>
+        <div id="continue-message" class="hidden fadeable">Continue</div>
+
+      <div id="overlay1" class="SouvenirStd-Light" style="font-size:0.5em">
+        <h1>Scene 3: The Apartment</h1> 
+             <div id="AptProgressBar">
+              <div id="Progress"></div>
+        </div>
+      </div>
+  </br>
+</br>
+</br><!-- 
+        <div id="instructions" class="instructions hidden fadeable" style="text-align:center; font-size:30px">
+
+
+              <div style="padding-top:20%">Martha has lived in this apartment for nearly 40 years. 
+              </br>
+            </br>
+              Use your arrow keys to look around.
+            </br></div>
+            <img style="padding-top:7%" src="http://dbef91h7r4asa.cloudfront.net/assets/1_street/img/apt_nav.gif">
+        </div>  -->
+
+    <!--     <div id="look-around" class= "hidden fadeable"></div>
+        <div id="right-button" class="hidden fadeable"></div>
+        <div id="left-button" class="hidden fadeable"></div>
+        <div id="continue-message" class="hidden fadeable">Continue</div> -->
+
+    </div>
+
+
   </body>
 </html>

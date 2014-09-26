@@ -1,0 +1,153 @@
+
+
+    <style>
+    				body{
+					  	background-color: black;
+					  }
+
+					   .fadeable {
+				        -webkit-transition: 1s opacity, 1s visibility;
+				           -moz-transition: 1s opacity, 1s visibility;
+				            -ms-transition: 1s opacity, 1s visibility;
+				             -o-transition: 1s opacity, 1s visibility;
+				                transition: 1s opacity, 1s visibility;
+				      }
+
+				      .instructions{
+					      z-index:30; 
+					      background-color:rgba(0,0,0,1.0); 
+					      position:fixed;
+					      left:0;
+					      top:0;
+					      margin-left:0; 
+					      width: 100%;
+					      height:100%; 
+					      padding:20px;
+					    }
+
+
+			      #IntroProgressBar{
+			        position: absolute;
+			        width: 300px;
+			        height: 10px;
+			        margin-left: -150px;
+			        top: 75%;
+			        left: 50%;
+			        border: 2px solid white;
+			      }
+
+			      #IntroProgressBar #Progress{
+			        position: absolute;
+			        left: 0px;
+			        top: 0px;
+			        height: 100%;
+			        width: 0%;
+			        background-color: white;
+			      }
+
+			
+    </style>
+		<!--the frameview is not loaded, which is why it is not showing up but you can hear it.--> 
+		<div class="focalpoint" data-focus-scale="cover" data-focus-left=".66" data-focus-top=".66" style="
+		z-index:10">
+			  <video width="1280" height="720" preload="auto" class="frame-video" id="intro" data-video:"intro">
+			  	<source src="http://dbef91h7r4asa.cloudfront.net/assets/1_street/video/1.0.mp4" type="video/ogg"></source>	
+			  	<source src="http://dbef91h7r4asa.cloudfront.net/assets/1_street/video/1.0.webmhd.webm" type="video/webm"></source>
+			  </video>
+		
+				<div id="title" class= "instructions fadeable" style= "z-index:5; padding-top:10%">
+
+					<!-- add a progress bar here--> 
+						 <div id="text" style="text-align:center; margin-top:9%">
+							 <img style="height:142px; width:800px; outline:none; padding-bottom:2%;" src= "http://89steps.s3.amazonaws.com/assets/1_street/img/uniondocs_pov_logo.png">
+						 <h2> A UnionDocs Production
+						      <br>
+							Produced in association with American Documentary | POV
+						 </h2>
+						  <div id="IntroProgressBar">
+              				<div id="Progress"></div>
+						</div>
+				</div>
+	<!-- 	</div> -->
+		</div>
+	
+
+	<!-- <audio data-background="true" preload="auto">
+      <source src="../../../assets/2/sound/2.0backgroundloop.mp3" type="audio/mp3"></source>
+    </audio> -->
+
+
+    <script>
+
+	var title = document.querySelector("#title");
+   // title.fadeIn(); 
+    function init(e) {
+
+	console.log("init"); 
+	if (window.parent && window.parent.hideNav) {
+     window.parent.hideNav();
+	}; 
+	window.parent.disableRightLeft(); 
+
+			var nav = document.querySelector(".top-bar-section") 
+			$('.nextbutton').addClass('hidden'); 
+			var popcorn = Popcorn("#intro");
+			var title = document.querySelector("#title");
+		 assets = []; 
+		 assets.push(popcorn.video); 
+		 console.log("assets" + assets.length);
+
+ 	title.classList.remove('hidden'); 
+
+ 		util.loader.ensureLoaded(assets, function(percent) {
+ 			  console.log("total percentages: ", percent); 
+		 	//console.log("progress"); 
+		 	  percent *= 100;
+		      percent += "%";
+		      $("#IntroProgressBar #Progress").stop()
+		        .animate({
+		          width : percent
+		        }, 100);
+ 
+		 }, function() {
+		 	console.log("i am done"); 
+		 	//alert("done"); 
+		 	//title.fadeOut(); 
+			
+
+			if (popcorn.video.readyState === 4 ) {
+				console.log('video ready'); 
+ 					 setTimeout(function() {
+ 					 	//console.log('timeout'); 
+ 						// console.log('video is ready'); 
+						title.classList.add('hidden'); 
+						//title.fadeOut(1500); 
+						nav.classList.remove('hidden'); 
+ 						popcorn.play(); 
+ 					 }, 5000); 
+				}
+ 			
+
+	 		popcorn.cue(58, function() {
+		 	console.log("cued"); 
+	 	 //go to the next chapter:
+	 			setTimeout(function() {
+	 		//window.parent.next(); 
+				window.top.hideNav();   
+	 			next();
+	 			//window.top.hideNav();   
+	 			}, 3200); 
+	 	 		});
+
+		 });
+
+ 	}
+ 
+ 	init(); 
+
+
+	
+</script>
+
+
+

@@ -1,4 +1,9 @@
 (function() {
+      window.parent.hideNav();
+      window.parent.disableRightLeft(); 
+ 
+
+  window.top.disableKeyLeft(); 
 
   var VIDEO_TRANSITION_DURATION = 1000;
   var BUTTON_SHOW_DELAY = 1500;
@@ -97,9 +102,12 @@
       window.parent.hideNav();
     }
 
+
     var leftButton = document.querySelector('#left-button');
     var rightButton = document.querySelector('#right-button');
     var continueMessage = document.querySelector('#continue-message');
+    var instructions = document.querySelector('#instructions'); 
+    var lookAround = document.querySelector('#look-around'); 
 
     var startVideo = document.querySelector('video[data-video="start"]');
     var backgroundVideo = document.querySelector('video[data-video="background"]');
@@ -108,8 +116,9 @@
     var leftVideos = Array.prototype.slice.call(document.querySelectorAll('video[data-video="left"]'));
     var videoContainer = document.querySelector('#video-container');
     var centerVideos = [backgroundVideo, kitchenVideo, startVideo];
-    var videos = centerVideos.concat(rightVideos).concat(leftVideos);
+    var video = centerVideos.concat(rightVideos).concat(leftVideos);
     var audio = Array.prototype.slice.call(document.querySelectorAll('audio'));
+
 
     var videoContainerIndex = 0;
 
@@ -173,33 +182,68 @@
       }
     }
 
+         var keyPressRight = function(e) {
+            console.log("pressed a key"); 
+            if (e.which == 39) {
+              console.log("right"); 
+              //this is not working, when you press up. 
+                onRightButtonClick(e); 
+              }
+            }
+
+
+            var keyPressLeft = function(e) {
+              if (e.which == 37) {
+                onLeftButtonClick(e); 
+              }
+            }
+
+    // document.addEventListener('keydown',keyPressLeft, false); 
+
     function onLeftButtonClick (e) {
+      // document.addEventListener('keydown',keyPressLeft, false); 
+      // document.addEventListener('keydown', keyPressRight, false); 
+
       videoContainerIndex = Math.min(videoContainerIndex + 1, 1);
       playPositionedVideo();
       videoContainer.style.left = 50 + videoContainerIndex * 100 + '%';
 
       if (videoContainerIndex === 1) {
         leftButton.classList.add('hidden');
+        lookAround.classList.add('hidden'); 
         leftButton.removeEventListener('click', onLeftButtonClick, false);
+        document.removeEventListener('keydown',keyPressLeft, false); 
+
       }
       else if (videoContainerIndex === 0) {
         rightButton.classList.remove('hidden');
-        rightButton.addEventListener('click', onRightButtonClick, false);        
+        lookAround.classList.remove('hidden'); 
+        rightButton.addEventListener('click', onRightButtonClick, false);
+        document.addEventListener('keydown', keyPressRight, false);    
+        // document.addEventListener('keydown', keyPressRight, false); 
+     
       }
     }
 
     function onRightButtonClick (e) {
+      // document.addEventListener('keydown', keyPressRight, false); 
+      // document.addEventListener('keydown',keyPressLeft, false); 
+
       videoContainerIndex = Math.max(videoContainerIndex - 1, -1);
       playPositionedVideo();
       videoContainer.style.left = 50 + videoContainerIndex * 100 + '%';
 
       if (videoContainerIndex === -1) {
         rightButton.classList.add('hidden');
+        lookAround.classList.add('hidden'); 
         rightButton.removeEventListener('click', onRightButtonClick, false);
+        document.removeEventListener('keydown', keyPressRight, false); 
       }
       else if (videoContainerIndex === 0) {
         leftButton.classList.remove('hidden');
-        leftButton.addEventListener('click', onLeftButtonClick, false);        
+        lookAround.classList.remove('hidden'); 
+        leftButton.addEventListener('click', onLeftButtonClick, false);   
+        document.addEventListener('keydown', keyPressLeft, false);      
       }
     }
 
@@ -223,27 +267,28 @@
         videoContainer.style.webkitTransform = videoContainer.style.mozTransform = 'scale(' + scale + ')';
 
     }
-
-    Popcorn.plugin('step', {
-      start: function () {
-        ++numSteps;
-      }
-    });
-
-    Popcorn.plugin('floor', {
-      start: function () {
-        ++numFloors;
-        floorAudioController.resetFloorIndex();
-        floorCounterSpan.innerHTML = numFloors;
-      }
-    });
+    //there was some popcorn js stuff from the steps left here. 
 
     leftVideos.videoIndex = 0;
     rightVideos.videoIndex = 0;
 
-    var assets = videos.concat(audio);
+    var assets = video.concat(audio);
+    console.log('asset length', assets.length); 
+    //console.dir(assets)
 
-    util.loader.ensureLoaded(assets, function(){
+      $('#overlay1').fadeIn();
+    util.loader.ensureLoaded(assets, function(percent) {
+      console.log("total percenteges: ", percent);
+          percent *= 100;
+          percent += "%";
+          $("#AptProgressBar #Progress").stop()
+        .animate({
+          width : percent
+        }, 100);
+    }, function(){
+      console.log("DONEEEEE");
+      $('#overlay1').fadeOut();
+      
       window.addEventListener('resize', positionVideo, false);
       positionVideo();
       
@@ -261,37 +306,71 @@
       backgroundVideo.hidden = true;
 
       startVideo.play();
+
+      backgroundPause = false; 
+      backgroundPlaying = false; 
+
+
+        var keyPressInstructions = function(e) {
+            console.log('pressed a key'); 
+                    if (e.which !== 37 || e.which !== 39) {
+                      console.log('not left or right'); 
+                     hideInstructions(); 
+                    }
+                  }
+      //this is when the start video ends, what do you want to have happen?
       startVideo.addEventListener('ended', function onStartVideoEnded (e) {
         startVideo.removeEventListener('ended', onStartVideoEnded, false);
-  
-        backgroundVideo.hidden = false;
-        startVideo.hidden = true;
-        backgroundVideo.play();
 
-        setTimeout(function () {
-          rightButton.classList.remove('hidden');
-          leftButton.classList.remove('hidden');
-          leftButton.addEventListener('click', onLeftButtonClick, false);
-          rightButton.addEventListener('click', onRightButtonClick, false);
-        }, BUTTON_SHOW_DELAY);
+          backgroundVideo.hidden = false;
+          startVideo.hidden = true;
+          backgroundVideo.pause();
+          backgroundPause = true; 
 
-        backgroundVideo.addEventListener('ended', function (e) {
-          if (window.parent && window.parent.next) {
-            window.parent.next();
+          if (backgroundPause) {
+            console.log('background video is paused'); 
+            //pause the background video after start video ends and add the instructions. 
+            instructions.classList.remove('hidden'); 
+             document.addEventListener('keydown', keyPressInstructions, false); 
+
+                window.addEventListener('click', function hideInstructions() {
+                  window.removeEventListener('click', hideInstructions, false )
+                  instructions.classList.add('hidden'); 
+                  backgroundVideo.play(); 
+                }, false); 
+
+                // document.addEventListener('keydown', keyPressInstructions, false); 
           }
-          else {
-            videoContainer.style.left = '50%';
-            leftButton.removeEventListener('click', onLeftButtonClick, false);
-            rightButton.removeEventListener('click', onRightButtonClick, false);
-            rightButton.classList.remove('hidden');
-            leftButton.classList.add('hidden');
-            continueMessage.classList.remove('hidden');
-            rightButton.addEventListener('click', function (e) {
-            }, false);
+
+          backgroundPlaying = true; 
+
+          if (backgroundPlaying) {
+                   //add button controls 
+                   rightButton.classList.remove('hidden');
+                   leftButton.classList.remove('hidden');
+                   leftButton.addEventListener('click', onLeftButtonClick, false);
+                   rightButton.addEventListener('click', onRightButtonClick, false);
+                   document.addEventListener('keydown', keyPressRight, false); 
+                   document.addEventListener('keydown', keyPressLeft, false); 
+
+                backgroundVideo.addEventListener('ended', function (e) {
+                  if (window.parent && window.parent.next) {
+                    window.parent.next();
+                  }
+                  else {
+                    videoContainer.style.left = '50%';
+                    leftButton.removeEventListener('click', onLeftButtonClick, false);
+                    rightButton.removeEventListener('click', onRightButtonClick, false);
+                    document.removeEventListener('keydown', keyPressLeft, false); 
+                    document.removeEventListener('keydown', keyPressRight, false); 
+                    rightButton.classList.remove('hidden');
+                    leftButton.classList.add('hidden');
+                    rightButton.addEventListener('click', function (e) {
+                    }, false);
+                }
+              }, false);
           }
-        }, false);
       }, false);
-
       prepareBackgroundSoundsLoop(audio).start();
     });
   }

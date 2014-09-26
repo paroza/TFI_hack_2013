@@ -1,6 +1,25 @@
+<html>
+<!-- do not erase the style, because this is what erases the old one, the right index number, in change frame--> 
+<style>
+.SouvenirStd-Light { 
+  font-family: SouvenirStd-Light;
+  font-weight: normal;
+  font-style: normal;
+}
+</style>
+
 <div class="focalpoint" data-focus-scale="cover" data-focus-left=".55" data-focus-top=".66">
-  <video width="1280" height="720" autoplay loop class="frame-video">
-  	<source src="assets/1/video/1.8.webmhd.webm" type="video/webm"></source>
-    <source src="assets/1/video/1.8.mp4.mp4" type="video/mp4"></source>
+  <video width="1280" height="720" preload="auto" loop class="frame-video">
+  	<source src="http://dbef91h7r4asa.cloudfront.net/assets/1_street/video/1.8.webmhd.webm" type="video/webm"></source>
+    <source src="http://dbef91h7r4asa.cloudfront.net/assets/1_street/video/1.8.mp4" type="video/mp4"></source>
   </video>
 </div>
+
+  <img style="z-index:10; position:absolute; margin-left:50%; top:90%" src="https://s3-us-west-2.amazonaws.com/89steps/assets/ux/Street_Nav/nav8.png"> 
+
+</html>
+<script>
+window.parent.enablekeyRightLeft(); 
+showNavPrev(); 
+showNavNext(); 
+</script> 
