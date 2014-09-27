@@ -23,6 +23,7 @@ function init(e) {
 		window.addEventListener('click', function hideInstructions() {
 		window.removeEventListener('click', hideInstructions); 
 		instructions.classList.add('hidden'); 
+
 		}, false); 
 
 
@@ -55,7 +56,9 @@ function init(e) {
 			nextEffect: 'fade', 
 			prevEffect: 'fade', 
 				afterShow: function() {
-				$("#container-dropdown").hide(); 
+				
+						removeNavigation(); 
+
 				//'this', here is the current slide/ 
 
 				// Grab the "data-fancybox-group" attribute to identify the audio group we need to sift through here
@@ -109,10 +112,13 @@ function init(e) {
 	activeListingTest(); 
 	activeStove(); 
 	activeDays(); 
-
 } //end of INIT
 		
+function removeNavigation() {
+	var pagetitle = document.querySelector('.pagetitle')
+	pagetitle.classList.add('hidden'); 
 
+}
 function callComesIn() {
 	setTimeout(function(){
 	console.log("call coming in"); 
@@ -163,6 +169,7 @@ var currentSound = null;
 
 //this activates everything for the address 
 function activeAddress() {
+
 	address.addEventListener('click', function(e) { 
 		 console.log('clicked address');
 			if (currentSound) {

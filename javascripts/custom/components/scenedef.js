@@ -332,7 +332,7 @@ var Pages = function () {
                         buffer:true,
                         autoplay: false,
                         fadein:0,
-                        delay: 1000, 
+                        delay: 0, 
                         onend: function() {
                           _timer.checkTimer(); 
                         }
@@ -382,7 +382,7 @@ var Pages = function () {
                         // console.log("the right arrow is removed"); 
                       }, 
                     loop: false,
-                    buffer:true,
+                    buffer:false,
                     autoplay: false,
                     fadein:0,
                     delay: 1000, 
