@@ -19,21 +19,77 @@ function init(e) {
 	// var video = document.querySelector()
 	var videoplayed = true; 
 
-				$("#instructions").removeClass('hidden');  
-				window.addEventListener('click', function hideInstructions() {
-						window.removeEventListener('click', hideInstructions); 
-						instructions.classList.add('hidden'); 
-					}, false); 
+	$("#instructions").removeClass('hidden');  
+		window.addEventListener('click', function hideInstructions() {
+		window.removeEventListener('click', hideInstructions); 
+		instructions.classList.add('hidden'); 
+		}, false); 
 
 
-				$(".fancybox").fancybox({
-			        padding : 0, 
-			        arrows: true, 
-			        closeBtn: true,
-			        nextEffect: 'fade', 
-			        prevEffect: 'fade', 
-			        // loop: true, 
-			    });
+ var galleryAudioUrlSets = {
+    group1: [
+      null,
+      null,
+      ['https://s3-us-west-2.amazonaws.com/89steps/assets/5_website/audio/5.04_02_stove_01.mp3'], 
+      null, 
+      ['https://s3-us-west-2.amazonaws.com/89steps/assets/5_website/audio/5.04_03_fridge_01.mp3'], 
+      null, 
+      ['https://s3-us-west-2.amazonaws.com/89steps/assets/5_website/audio/5.04_04_bathroom.mp3'], 
+      null, 
+      ['https://s3-us-west-2.amazonaws.com/89steps/assets/5_website/audio/5.04_05_living_01.mp3'],
+      null, 
+      ['https://s3-us-west-2.amazonaws.com/89steps/assets/5_website/audio/5.04_06_hallway_01.mp3'], 
+      null, 
+      ['https://s3-us-west-2.amazonaws.com/89steps/assets/5_website/audio/5.04_07_kitchen_01.pm3'], 
+      null, 
+      ['https://s3-us-west-2.amazonaws.com/89steps/assets/5_website/audio/5.04_08_door_01.mp3'], 
+      null
+    ]
+  };
+
+
+		$(".fancybox").fancybox({
+			padding : 0, 
+			arrows: true, 
+			closeBtn: true,
+			nextEffect: 'fade', 
+			prevEffect: 'fade', 
+				afterShow: function() {
+				$("#container-dropdown").hide(); 
+				//'this', here is the current slide/ 
+
+				// Grab the "data-fancybox-group" attribute to identify the audio group we need to sift through here
+			     var audioGroup = this.element.context.getAttribute('data-fancybox-group');
+			     // If the there is a url set for the group/index pairing
+			      if (galleryAudioUrlSets[audioGroup] && galleryAudioUrlSets[audioGroup][this.index]) {
+
+			        // Make a new howl with the specified urls
+			        currentSound = new Howl({
+			          urls: galleryAudioUrlSets[audioGroup][this.index],
+			          buffer: true
+			        }).fadeIn(1, 250);
+			      }
+			      else {
+			        console.error('No sound for ', audioGroup, this.index);
+			      }
+			    },
+
+			    beforeChange: function () {
+			      // if anything is playing when we're just about to change slides, stop it!
+			      if (currentSound) {
+			        currentSound.fadeOut(0, 250);
+			      }
+			    },
+
+			    beforeClose: function () {
+			      // if anything is playing when we're just about to close the fancybox, stop it!
+			      if (currentSound) {
+			        currentSound.fadeOut(0, 250);
+			      }
+			    }
+
+			  });
+		
 
 	// var a1 = document.querySelector("#apartment1"); 
 	callComesIn(); 
@@ -179,7 +235,7 @@ function activeListingTest() {
 				console.log('fading out' + currentSound);
 			}
 		var sound = new Howl({
-				urls: ['https://s3-us-west-2.amazonaws.com/89steps/assets/5_website/audio/5.04_05_living_01.mp3', 'https://s3-us-west-2.amazonaws.com/89steps/assets/5_website/audio/5.04_05_living_01.oga'], 
+				urls: ['https://s3-us-west-2.amazonaws.com/89steps/assets/5_website/audio/5.04_01_living_01.mp3', 'https://s3-us-west-2.amazonaws.com/89steps/assets/5_website/audio/5.04_01_living_01.oga'], 
 				buffer: true, 
 			}).play(); 
 			currentSound = sound; 
