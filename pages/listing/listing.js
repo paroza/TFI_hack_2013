@@ -2,7 +2,8 @@
 //bring in the noise and the images. 
 	if (window.parent && window.parent.hideNav) {
       window.parent.hideNav();
-      console.log('hid navigation'); 
+      console.log('hid navigation');
+      
     }
 
 	// var currentSound = null; 
@@ -23,6 +24,9 @@ function init(e) {
 		window.addEventListener('click', function hideInstructions() {
 		window.removeEventListener('click', hideInstructions); 
 		instructions.classList.add('hidden'); 
+			setTimeout(function() {
+				removePageTitle(); 
+			}, 4000); 
 
 		}, false); 
 
@@ -57,7 +61,7 @@ function init(e) {
 			prevEffect: 'fade', 
 				afterShow: function() {
 				
-						removeNavigation(); 
+				
 
 				//'this', here is the current slide/ 
 
@@ -82,6 +86,8 @@ function init(e) {
 			      if (currentSound) {
 			        currentSound.fadeOut(0, 250);
 			      }
+			      // removeNavigation(); 
+
 			    },
 
 			    beforeClose: function () {
@@ -112,9 +118,11 @@ function init(e) {
 	activeListingTest(); 
 	activeStove(); 
 	activeDays(); 
+
+
 } //end of INIT
 		
-function removeNavigation() {
+function removePageTitle() {
 	var pagetitle = document.querySelector('.pagetitle')
 	pagetitle.classList.add('hidden'); 
 
@@ -460,8 +468,7 @@ function changeMap() {
 }
 
 
-
-
+		
 
 document.addEventListener('DOMContentLoaded', init, false);
 
